@@ -20,6 +20,7 @@ def loop():
             if (len(articles) > 0):
                 print 'new articles found: %d' % len(articles)
                 mail.emailArticles(articles)
+			current_time = new_time
         time.sleep(10)
 
 def initcrawler():

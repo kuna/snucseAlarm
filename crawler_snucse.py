@@ -107,5 +107,9 @@ def getNewArticles():
 # make default session
 session = Login()
 
+def refreshSession():
+    global session
+    session = Login()
+
 def getSession():
     return session
