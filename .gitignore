@@ -1,0 +1,5 @@
+*.bak
+*.tmp
+*.pyc
+data.db
+private.py
