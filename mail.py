@@ -5,25 +5,27 @@
 # get receiver's addr: private.email
 import private
 
-import smtplib
+# gmail
+import yagmail
 from email.mime.text import MIMEText
 
-# default value
-email_from = "noreply@noreply.com"
-
 def createEmail(article):
-    msg = MIMEText(article['detail'])
+    #msg = MIMEText(article['detail'])
+    msg = {}
+    msg['Body'] = article['detail']
     msg['Subject'] = article['title']
-    msg['To'] = private.email
-    msg['From'] = email_from
+    msg['To'] = private.gmail_id
+    msg['From'] = private.gmail_id
     return msg
 
 def emailArticle(article):
     msg = createEmail(article)
-    s = smtplib.SMTP('localhost')
-    s.sendmail(msg['From'], [msg['To']], msg.as_string())
-    s.quit()
+    yag = yagmail.SMTP(private.gmail_id, private.gmail_password)
+    yag.send(to=msg['To'], subject=msg['Subject'], contents=msg['Body'])
 
 def emailArticles(articles):
     for article in articles:
         emailArticle(article)
+
+#test
+#emailArticle({'detail':'this is a test', 'title':'test'})

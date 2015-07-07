@@ -15,16 +15,17 @@ category_urls = ['http://eng.snu.ac.kr/bbs/notice_list.php?code_value=SN060101&u
 #
 def ParsePage(url):
     articles = []
-    r = session.get(url)
+    r = requests.get(url)
     if (r.status_code != 200):
         return []
     soup = BeautifulSoup(r.content)
-    trs = soup.find(id="content_body").find("ol", class_="pa_t7").find_all("li")
-    for tr in trs:
-        id = tr.find("a")["href"][12:-2]
+    trs = soup.find(id="content_body").find("form").find_all("div", class_="clear")
+    for tr in trs[1:-1]:
+        tds = tr.find_all("li")
+        id = tds[2].find("a")["href"][22:-2]
         url = "http://eng.snu.ac.kr/bbs/notice_view.php?bbsid=notice&bbsidx=%s" % id
-        title = tr.find("a").get_text()
-        detail = tr.find("div").get_text()
+        title = tds[2].find("a").get_text()
+        detail = tds[2].find("div").get_text()
         articles.append({"id": id,
             "url": url,
             "title": title,
@@ -37,7 +38,7 @@ def ParsePage(url):
 def getAllArticles():
     articles = []
     for url in category_urls:
-        articles += ParsePage(session, url)
+        articles += ParsePage(url)
     return articles
 
 #
@@ -66,3 +67,5 @@ def getNewArticle():
         
     print 'new Articles %d' % new_cnt
     return articles
+
+#checkAllasRead()

@@ -30,13 +30,10 @@ def main():
     print 'to exit ^C'
     try:
         initcrawler()
+        print 'initalize finished.'
         loop()
     except KeyboardInterrupt:
         print 'bye (by ^C)'
-        exit()
-    except:
-        print 'exit program (by some unknown error)'
-        print sys.exc_info()[0]
         exit()
     print 'exit program (by exiting loop func)'
 
