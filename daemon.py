@@ -11,12 +11,12 @@ def timemilisec():
 
 def loop():
     # continously loop to find new message
-    # scan per 10 min (60 min?)
+    # scan per 60min
     current_time = timemilisec()
     while True:
         new_time = timemilisec()
-        if (new_time - current_time > 1000*60*30):
-            articles = crawler.getNewArticles
+        if (new_time - current_time > 1000*60*60):
+            articles = crawler.getNewArticles()
             if (len(articles) > 0):
                 print 'new articles found: %d' % len(articles)
                 mail.emailArticles(articles)

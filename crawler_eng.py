@@ -28,7 +28,7 @@ def ParsePage(url):
         detail = tds[2].find("div").get_text()
         articles.append({"id": id,
             "url": url,
-            "title": title,
+            "title": "[SNUEngineering] " + title,
             "detail": detail})
     return articles
 
@@ -48,6 +48,7 @@ def getAllArticles():
 #
 ignored_ids = []    # these ids is already recognized so won't going to be posted
 def checkAllasRead():
+    global ignored_ids
     for article in getAllArticles():
         if (article['id'] not in ignored_ids):
             ignored_ids.append(article['id'])
@@ -57,7 +58,8 @@ def checkAllasRead():
 # common function: getNewArticle
 # new articles will be automatically added to ignored_ids
 #
-def getNewArticle():
+def getNewArticles():
+    global ignored_ids
     articles = []
     new_cnt = 0
     for article in getAllArticles():
@@ -65,7 +67,7 @@ def getNewArticle():
             articles.append(article)
             ignored_ids.append(article['id'])
         
-    print 'new Articles %d' % new_cnt
+    print '[SNUEngineering] new Articles %d' % new_cnt
     return articles
 
 #checkAllasRead()
