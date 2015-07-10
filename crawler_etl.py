@@ -6,9 +6,6 @@ import private
 import urllib, urllib2, requests
 from bs4 import BeautifulSoup
 
-# customize your etl board (board list url)
-etl_urls = ["http://etl.snu.ac.kr/mod/ubboard/view.php?id=337196"]
-
 def Login():
 	session = requests.Session()
 	def doLogin():
@@ -70,7 +67,7 @@ def ParsePage(session, url):
 #
 def getAllArticles():
 	articles = []
-	for url in etl_urls:
+	for url in private.urls_etl:
 		articles += ParsePage(session, url)
 	return articles
 

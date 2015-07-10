@@ -17,3 +17,11 @@ snu_password = 'pass'
 
 gmail_id = 'thisismy@email.com'
 gmail_pass = '1234'
+
+#
+# urls to parse
+#
+
+urls_snucse = []
+urls_etl = []
+urls_snueng = []

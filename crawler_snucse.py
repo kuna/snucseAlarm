@@ -12,10 +12,6 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-category_urls = ["http://www.snucse.org/Panorama/Popup.aspx?event=add&type=article&uid=3059",
-    "http://www.snucse.org/Panorama/Popup.aspx?type=article&uid=3067&event=add",
-    "http://www.snucse.org/Panorama/Popup.aspx?type=article&uid=3284&event=add"]
-
 #
 # login function
 #
@@ -82,7 +78,7 @@ def ParsePage(session, url):
 #
 def getAllArticles():
     articles = []
-    for url in category_urls:
+    for url in private.urls_snucse:
         articles += ParsePage(session, url)
     return articles
 

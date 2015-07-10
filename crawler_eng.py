@@ -5,9 +5,7 @@
 
 import urllib, urllib2, requests
 from bs4 import BeautifulSoup
-
-category_urls = ['http://eng.snu.ac.kr/bbs/notice_list.php?code_value=SN060101&user_rpp=20&b_type=',
-    'http://eng.snu.ac.kr/bbs/janghak_list.php?code_value=SN060103&user_rpp=20&b_type=']
+import private
 
 #
 # parse page -> title & url & detail & id
@@ -37,7 +35,7 @@ def ParsePage(url):
 #
 def getAllArticles():
     articles = []
-    for url in category_urls:
+    for url in private.urls_snueng:
         articles += ParsePage(url)
     return articles
 
