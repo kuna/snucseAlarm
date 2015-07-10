@@ -47,7 +47,11 @@ def getDetail(session, url):
     if (r.status_code != 200):
         return None
     soup = BeautifulSoup(r.content)
-    return soup.find(id="AricleContent").get_text()
+    element_article = soup.find(id="ArticleContent")
+    if (element_article == None):
+        return "cannot find detail"
+    else:
+        return element_article.get_text()
 
 #
 # parse page -> title & url & detail
@@ -123,3 +127,4 @@ def refreshSession():
 
 def getSession():
     return session
+
