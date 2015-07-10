@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 #
 # sends email to user
 #
@@ -12,7 +13,8 @@ from email.mime.text import MIMEText
 def createEmail(article):
     #msg = MIMEText(article['detail'])
     msg = {}
-    msg['Body'] = article['detail']
+    msg['Body'] = "<p>" + "Link: <a href='" + article['url'] + "'>" + article['url'] + "</a></p>" + \
+        "<hr><p>" + article['detail'] + "</p>"
     msg['Subject'] = article['title']
     msg['To'] = private.gmail_id
     msg['From'] = private.gmail_id
@@ -28,4 +30,4 @@ def emailArticles(articles):
         emailArticle(article)
 
 #test
-#emailArticle({'detail':'this is a test', 'title':'test'})
+emailArticle({'detail':'this is a test', 'title':'test', 'url':'http://abc.com'})
