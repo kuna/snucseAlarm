@@ -6,6 +6,12 @@ snucse_id = 'id'
 snucse_password = 'pass'
 
 #
+# enter id/pass of snu etl
+#
+snu_id = 'id'
+snu_password = 'pass'
+
+#
 # enter gmail address
 #
 
