@@ -1,76 +1,68 @@
 #-*- coding: utf-8 -*-
-# just load webpage from snucse
 
-# from private: snucse_id, snucse_password, categories
+# from private: snu_id, snu_password
 import private
 
 import urllib, urllib2, requests
 from bs4 import BeautifulSoup
 
-# change console locale
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+# customize your etl board
+etl_urls = [""]
 
-category_urls = ["http://www.snucse.org/Panorama/Popup.aspx?event=add&type=article&uid=3059",
-    "http://www.snucse.org/Panorama/Popup.aspx?type=article&uid=3067&event=add",
-    "http://www.snucse.org/Panorama/Popup.aspx?type=article&uid=3284&event=add"]
-
-#
-# login function
-#
 def Login():
     session = requests.Session()
     def doLogin():
-        r = session.post("https://www.snucse.org/Authentication/Login.aspx",
-            data={"login_type": "member_login",
-                "referrer": "/",
-                "redirect_mode": "none",
-                "member_account": private.snucse_id,
-                "member_password": private.snucse_password,
-                "secure": "on"})
-        if (r.status_code == 200):
-            return True
-        else:
+        # get response from first request
+        # and send request again to get logined
+        r = session.post("https://sso.snu.ac.kr/safeidentity/modules/auth_idpwd",
+            data={"si_redirect_address": "",
+            "si_realm": "SnuUser1",
+            "_enpass_login_": "submit",
+            "langKnd": "en",
+            "si_id": private.snu_id,
+            "si_pwd": private.snu_password,
+            "btn_login.x": 0,
+            "btn_login.y": 0})
+        if (r.status_code != 200):
             return False
+        fcs_data = {}
+        login_soup = BeautifulSoup(r.content)
+        for ctrl_input in login_soup.find_all("input"):
+            fcs_data[ctrl_input["name"]] = ctrl_input["value"]
+        r = session.post("https://sso.snu.ac.kr/nls3/fcs", data=fcs_data)
+        if (r.status_code != 200):
+            return False
+        return True
 
-    # login with session
     if (not doLogin()):
         return None
     else:
         return session
-    #r = session.get("http://www.snucse.org/")
-    #print session.cookies.get_dict()
 
 def getDetail(session, url):
     r = session.get(url)
     if (r.status_code != 200):
         return None
     soup = BeautifulSoup(r.content)
-    return soup.find(id="AricleContent").get_text()
+    return soup.find("div", class_="text_to_html").get_text()
 
-#
-# parse page -> title & url & detail
-#
 def ParsePage(session, url):
     articles = []
     r = session.get(url)
     if (r.status_code != 200):
         return []
     soup = BeautifulSoup(r.content)
-    trs = soup.find(id="Panorama").find_all("tr")
+    trs = soup.find(id="ubboard_list_form").find_all("tr")
     for tr in trs[1:]:
         tds = tr.find_all("td")
-        if (tds[2].find("a") == None):
-            # it's removed article so ignore and continue
-            continue
-        url = tds[2].find("a")["href"]
-        url_absolute = url.replace("../", "http://www.snucse.org/")
-        title = tds[2].get_text()
-        articles.append({"id": url.replace("../", ""),
-            "url": url_absolute,
-            "title": "[SNUCSE] " + title,
-            "detail": "none"})
+        title = tds[1].find("a").get_text().strip()
+        url = tds[1].find("a")["href"]
+        detail = "none"     # lazy crawler
+        id = url[url.index("bwid=")+5:]
+        articles.append({"id": id,
+            "url": url,
+            "title": title,
+            "detail": detail})
     return articles
 
 #
@@ -78,7 +70,7 @@ def ParsePage(session, url):
 #
 def getAllArticles():
     articles = []
-    for url in category_urls:
+    for url in etl_urls:
         articles += ParsePage(session, url)
     return articles
 
@@ -94,7 +86,6 @@ def checkAllasRead():
         if (article['id'] not in ignored_ids):
             ignored_ids.append(article['id'])
     print '%d articles checked as read' % len(ignored_ids)
-    #ignored_ids = ignored_ids[:-1] # for test: omit 1 id purposly
 
 #
 # common function: getNewArticle
@@ -106,12 +97,13 @@ def getNewArticles():
     new_cnt = 0
     for article in getAllArticles():
         if (article['id'] not in ignored_ids):
+            # receive detail now
             global session
             article['detail'] = getDetail(session, article['url'])
             articles.append(article)
             ignored_ids.append(article['id'])
         
-    print '[SNUCSE] new Articles %d' % new_cnt
+    print '[SNUETL] new Articles %d' % new_cnt
     return articles
 
 # make default session
@@ -123,3 +115,16 @@ def refreshSession():
 
 def getSession():
     return session
+
+#
+##########################################################
+#
+
+def test():
+    s = Login()
+    if (s == None):
+        print "failed to login"
+    print ParsePage(s, "http://etl.snu.ac.kr/mod/ubboard/view.php?id=337196")
+
+# login and get etl source for test
+#test()
