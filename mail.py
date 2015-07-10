@@ -30,4 +30,4 @@ def emailArticles(articles):
         emailArticle(article)
 
 #test
-emailArticle({'detail':'this is a test', 'title':'test', 'url':'http://abc.com'})
+#emailArticle({'detail':'this is a test', 'title':'test', 'url':'http://abc.com'})
