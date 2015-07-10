@@ -23,11 +23,11 @@ def createEmail(article):
 def emailArticle(article):
     msg = createEmail(article)
     yag = yagmail.SMTP(private.gmail_id, private.gmail_password)
-    yag.send(to=msg['To'], subject=msg['Subject'], contents=msg['Body'])
+    yag.send(to=msg['To'], subject=msg['Subject'], contents=msg['Body'].encode("cp949", "ignore"))
 
 def emailArticles(articles):
     for article in articles:
         emailArticle(article)
 
 #test
-#emailArticle({'detail':'this is a test', 'title':'test', 'url':'http://abc.com'})
+#emailArticle({'detail':u'this이건 is a test', 'title':'test', 'url':'http://abc.com'})
