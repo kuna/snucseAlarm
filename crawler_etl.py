@@ -6,7 +6,7 @@ import private
 import urllib, urllib2, requests
 from bs4 import BeautifulSoup
 
-# customize your etl board
+# customize your etl board (board list url)
 etl_urls = [""]
 
 def Login():
