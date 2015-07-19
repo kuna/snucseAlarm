@@ -4,14 +4,19 @@
 import crawler_snucse, crawler_eng, crawler_etl
 
 def getNewArticles():
-    # prepare
-    crawler_snucse.refreshSession()
+	articles = []
+	try:
+		# prepare
+		crawler_snucse.refreshSession()
+		crawler_etl.refreshSession()
 
-    articles = []
-    articles += crawler_snucse.getNewArticles()
-    articles += crawler_eng.getNewArticles()
-    articles += crawler_etl.getNewArticles()
-    return articles
+		articles += crawler_snucse.getNewArticles()
+		articles += crawler_eng.getNewArticles()
+		articles += crawler_etl.getNewArticles()
+	except:
+		print "something wrong with parsing"
+
+	return articles
 
 def initcrawler():
     crawler_snucse.checkAllasRead()
