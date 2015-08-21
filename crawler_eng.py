@@ -13,22 +13,31 @@ import private
 #
 def ParsePage(url):
     articles = []
+# pretends to be a web browser
+    #user_agent = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 5.1; hu-HU; rv:1.7.8) Gecko/20050511 Firefox/1.0.4'}
     r = requests.get(url)
     if (r.status_code != 200):
         return []
     soup = BeautifulSoup(r.content)
-    trs = soup.find(id="content_body").find("form").find_all("div", class_="clear")
-    for tr in trs[1:-1]:
-        tds = tr.find_all("li")
-        id = tds[2].find("a")["href"][22:-2]
-        url = "http://eng.snu.ac.kr/bbs/notice_view.php?bbsid=notice&bbsidx=%s" % id
-        title = tds[2].find("a").get_text()
-        detail = tds[2].find("div").get_text()
+    trs = soup.find(id="main-content").find("table").find_all("tr")
+    for tr in trs[1:]:
+        tds = tr.find_all("td")
+        id = tds[1].find("a")["href"][6:]
+        url = "http://eng.snu.ac.kr/node/%s" % id
+        title = tds[1].find("a").get_text()
+        detail = ""#getDetail(url)
         articles.append({"id": id,
             "url": url,
             "title": "[SNUEngineering] " + title,
             "detail": detail})
     return articles
+
+def getDetail(url):
+    r = requests.get(url)
+    if (r.status_code != 200):
+        return ""
+    soup = BeautifulSoup(r.content)
+    return soup.find(id="block-system-main").find("div", class_="postArea").html()
 
 #
 # return all categories' articles
@@ -36,7 +45,9 @@ def ParsePage(url):
 def getAllArticles():
     articles = []
     for url in private.urls_snueng:
-        articles += ParsePage(url)
+        article = ParsePage(url)
+        article['detail'] = getDetail(article['url']) #lazyfill detail
+        articles += article
     return articles
 
 #
@@ -68,4 +79,9 @@ def getNewArticles():
     print '[SNUEngineering] new Articles %d' % new_cnt
     return articles
 
-#checkAllasRead()
+
+if __name__=="__main__":
+    print("You executed submodule directly. would you like to test your submodule?\n"\
+        "(but you provide your information in private.py correctly) (y/n) >")
+    if (raw_input() == "y"):
+        print getNewArticles()

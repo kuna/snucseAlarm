@@ -117,13 +117,9 @@ def getSession():
 ##########################################################
 #
 
-def test():
-	s = Login()
-	if (s == None):
-		print "failed to login"
-	articles = ParsePage(s, "http://etl.snu.ac.kr/mod/ubboard/view.php?id=337196")
-	print getDetail(s, articles[0]['url'])
-
-# login and get etl source for test
-#test()
-
+if __name__=="__main__":
+    print("You executed submodule directly. would you like to test your submodule?\n"\
+        "(but you provide your information in private.py correctly) (y/n) >")
+    if (raw_input() == "y"):
+        refreshSession()
+        print getNewArticles()

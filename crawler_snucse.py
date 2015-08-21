@@ -124,3 +124,11 @@ def refreshSession():
 def getSession():
     return session
 
+
+
+if __name__=="__main__":
+    print("You executed submodule directly. would you like to test your submodule?\n"\
+        "(but you provide your information in private.py correctly) (y/n) >")
+    if (raw_input() == "y"):
+        refreshSession()
+        print getNewArticles()
