@@ -15,13 +15,13 @@ snu_password = 'pass'
 # enter gmail address
 #
 
-gmail_id = 'thisismy@email.com'
-gmail_pass = '1234'
+gmail_id = 'thisismy@gmail.com'
+gmail_password = '1234'
 
 #
 # urls to parse
 #
 
-urls_snucse = []
+urls_snucse = ["http://www.snucse.org/Panorama/Popup.aspx?type=article&event=add"]
 urls_etl = []
 urls_snueng = []
